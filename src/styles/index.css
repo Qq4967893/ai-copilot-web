@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+   * 可点击的按钮给手型。
+   *
+   * Tailwind v4 的 Preflight 去掉了 v3 那条 `button{cursor:pointer}`，改成跟随浏览器
+   * 默认值（也就是箭头）。实测编译产物里一条 cursor 规则都没有 —— 所以全站按钮
+   * （历史会话条目、新建会话、发送、复制/赞/踩、汉堡、重试）都是箭头，看不出能点。
+   *
+   * 统一补在这里而不是给每个组件挂 cursor-pointer：挂一遍会漏，而且以后新加的按钮
+   * 还得记得加。<a> 不用管，浏览器本来就给手型。
+   *
+   * 排除 :disabled —— 禁用态不该暗示可点击。
+   */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/*
+ * 深色面上的滚动条（目前只有侧边栏的「历史会话」列表用）。
+ *
+ * 默认滚动条是跟着系统走的浅色，压在 --sidebar 的深底上像贴上去的。macOS 用
+ * overlay 滚动条所以不明显，Windows / Linux 上是常驻的一条，很突兀。
+ *
+ * 只用标准属性、**不写 ::-webkit-scrollbar**：Chromium 从 121 起只要元素上出现
+ * scrollbar-width / scrollbar-color，就会整个忽略 ::-webkit-scrollbar 伪元素
+ * （实测 Chrome 153：单写 webkit 规则得到 20px，两者都写得到 11px）。两套一起写
+ * 不是降级兜底，是互相打架。标准属性在 Chrome 121+ / Firefox 64+ / Safari 18.2+
+ * 都支持，内部工具够用了。
+ *
+ * 鼠标移入侧边栏才显形：**靠切换颜色，不切换 scrollbar-width**。
+ * 切 width（none ↔ thin）会让 11px 的滚动条槽在 hover 时凭空出现，列表整体横向
+ * 抖一下；槽一直留着、只把滑块从透明变成有色，就没有任何重排。
+ */
+@utility scrollbar-sidebar {
+  scrollbar-width: thin;
+  /* 轨道和滑块都透明 —— 槽位保留，但看不见 */
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 150ms ease;
+}
+
+/* 配合 aside 上的 group 用：group-hover / group-focus-within 时才给滑块上色。
+   focus-within 是给键盘用户的：Tab 到列表里时滚动条同样该出现。 */
+@utility scrollbar-sidebar-visible {
+  scrollbar-color: var(--sidebar-surface-border) transparent;
+}

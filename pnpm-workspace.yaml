@@ -1,0 +1,4 @@
+# esbuild 要跑 postinstall 去链接平台二进制，pnpm 默认拦下所有构建脚本，
+# 拦下后连 `pnpm exec` 都会失败。显式放行，避免本地和 CI 不一致。
+allowBuilds:
+  esbuild: true

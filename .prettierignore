@@ -1,0 +1,6 @@
+dist/
+coverage/
+pnpm-lock.yaml
+
+# SingleFile 设计稿存档：机器生成的单行 HTML，格式化它既没意义也会炸掉 parser
+design-mock-*.html

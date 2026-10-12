@@ -1,0 +1,100 @@
+/*
+ * 最小 Design Tokens（技术设计 §4.2）。
+ *
+ * 只有 color / font size / font weight / spacing / radius / shadow / z-index 七组。
+ * 刻意不在 MVP 之前建完整 Design System —— 等组件在真实业务里跑过再往上抽。
+ *
+ * 只做亮色：PRD 和技术设计全文都没有暗色模式要求，本轮不引入 .dark 变体。
+ */
+
+:root {
+  /* color —— 中性灰基调，内部工具不需要品牌色 */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.21 0.006 285.9);
+  --surface: oklch(0.985 0 0);
+  --muted: oklch(0.967 0.001 286.4);
+  --muted-foreground: oklch(0.552 0.016 285.9);
+  --border: oklch(0.92 0.004 286.3);
+  --primary: oklch(0.21 0.006 285.9);
+  --primary-foreground: oklch(0.985 0 0);
+  --accent: oklch(0.967 0.001 286.4);
+  --accent-foreground: oklch(0.21 0.006 285.9);
+  --destructive: oklch(0.577 0.245 27.3);
+  --destructive-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.71 0.013 286.1);
+
+  /* sidebar —— 全站唯一的深色面（设计存档的 .sidebar）。
+   *
+   * 这一组刻意用 hex 而不是 oklch：值逐个取自存档的 :root，保持原样才能和存档对着核。
+   * 上面那套中性色仍然是 oklch，两者不混用、也不互相换算。
+   *
+   * 成组建 token 而不是散在调用处：十几个值分布在 brand / 新建会话 / 「历史会话」/ profile
+   * 四处，必须保持对比度一致。对话页那些只出现一两次的颜色则相反 —— 留在调用处。
+   */
+  --sidebar: #111827;
+  --sidebar-foreground: #d7dce5;
+  --sidebar-muted: #8390a4;
+  --sidebar-label: #667287;
+  --sidebar-item: #abb4c3;
+  --sidebar-surface: #222d42;
+  --sidebar-surface-border: #344158;
+  --sidebar-hover: #202a3d;
+  --sidebar-border: #2a3548;
+  --sidebar-avatar: #334057;
+  /* hover 描边。存档基础规则里是薄荷绿，但两份存档末尾的覆盖块都把它改成了这个
+     琥珀色 —— 呼应品牌 logo 的橙红渐变，以覆盖块为准。 */
+  --sidebar-accent: #c07c30;
+
+  --radius: 0.625rem;
+
+  /* z-index —— Tailwind 没有对应的 theme namespace，用 z-[var(--z-*)] 引用。
+   *
+   * 移动端抽屉必须压在自己的遮罩之上，否则一打开就被盖住、点不动：
+   *   输入框 20 < 遮罩 40 < 侧边栏 50
+   * 输入框在桌面端是普通流式元素（不是 position:fixed），--z-composer 暂时没人用，
+   * 留着是因为将来若有浮层要压在它之上，层序得有个明确的锚点。 */
+  --z-composer: 20;
+  --z-overlay: 40;
+  --z-sidebar: 50;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-label: var(--sidebar-label);
+  --color-sidebar-item: var(--sidebar-item);
+  --color-sidebar-surface: var(--sidebar-surface);
+  --color-sidebar-surface-border: var(--sidebar-surface-border);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-avatar: var(--sidebar-avatar);
+  --color-sidebar-accent: var(--sidebar-accent);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+@theme {
+  /* 中文优先的字体栈：系统界面字体在 macOS / Windows 上对中文的渲染都好过 Inter */
+  --font-sans:
+    system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}

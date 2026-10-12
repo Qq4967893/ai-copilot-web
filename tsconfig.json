@@ -1,0 +1,33 @@
+{
+  // 单一 tsconfig 覆盖 src / tests / vite.config.ts。
+  // 兄弟项目的约定是「工具配置集中在尽量少的文件里」（ai-copilot-api 把 ruff、
+  // pyright、pytest 全放在 pyproject.toml），所以这里不用 Vite 模板的三件套。
+  "compilerOptions": {
+    "target": "ES2022",
+    // ES2023 是为了 Array.prototype.findLastIndex；内部工具，浏览器版本可控。
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "types": ["node"],
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    // 分帧解析这类按下标取值的代码最容易漏掉 undefined，这个开关值得开。
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "tests", "vite.config.ts"]
+}
